@@ -1,0 +1,18 @@
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+import Main from './pages/Main';
+import Repository from './pages/Repository';
+
+function Routes() {
+    return (
+        <Router>
+            <Switch>
+                <Route path="/" exact component={Main} />
+                <Route path="/repository" exact component={Repository} />
+            </Switch>
+        </Router>
+    );
+}
+
+export default Routes;
