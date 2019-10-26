@@ -1,11 +1,8 @@
 import React from 'react';
+import { Title } from './styles';
 
 function Main() {
-    return (
-        <div>
-            <h1>main</h1>
-        </div>
-    );
+    return <Title>Hello world</Title>;
 }
 
 export default Main;
