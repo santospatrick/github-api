@@ -9,7 +9,7 @@ function Routes() {
         <Router>
             <Switch>
                 <Route path="/" exact component={Main} />
-                <Route path="/repository" exact component={Repository} />
+                <Route path="/repository/:repository" component={Repository} />
             </Switch>
         </Router>
     );

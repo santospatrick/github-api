@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
-import { Container, Form, SubmitButton, List } from './styles';
+import { Link } from 'react-router-dom';
+import { Form, SubmitButton, List } from './styles';
 import api from '../../services/api';
+import Container from '../../components/Container';
 
 function Main() {
     const initialRepositories = () => {
@@ -68,7 +70,11 @@ function Main() {
                 {repos.map(item => (
                     <li key={item.name}>
                         <span>{item.name}</span>
-                        <a href="/">Detalhes</a>
+                        <Link
+                            to={`/repository/${encodeURIComponent(item.name)}`}
+                        >
+                            Detalhes
+                        </Link>
                     </li>
                 ))}
             </List>
