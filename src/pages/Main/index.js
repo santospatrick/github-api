@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
-import { Container, Form, SubmitButton } from './styles';
+import { Container, Form, SubmitButton, List } from './styles';
 import api from '../../services/api';
 
 function Main() {
+    const initialRepositories = () => {
+        const repositories = localStorage.getItem('repositories');
+        if (repositories) {
+            return JSON.parse(repositories);
+        }
+        return [];
+    };
+
     const [newRepo, setNewRepo] = useState('');
-    const [repos, setRepos] = useState([]);
+    const [repos, setRepos] = useState(initialRepositories);
     const [loading, setLoading] = useState(false);
+
+    useEffect(
+        () => localStorage.setItem('repositories', JSON.stringify(repos)),
+        [repos]
+    );
 
     function handleInputChange(e) {
         setNewRepo(e.target.value);
@@ -23,6 +36,7 @@ function Main() {
         };
 
         setRepos([...repos, data]);
+        setNewRepo('');
         setLoading(false);
     }
 
@@ -41,7 +55,7 @@ function Main() {
                     value={newRepo}
                 />
 
-                <SubmitButton loading={loading}>
+                <SubmitButton loading={loading ? 1 : 0}>
                     {loading ? (
                         <FaSpinner color="#fff" size={14} />
                     ) : (
@@ -50,9 +64,14 @@ function Main() {
                 </SubmitButton>
             </Form>
 
-            {repos.map(item => (
-                <li key={item}>{item.name}</li>
-            ))}
+            <List>
+                {repos.map(item => (
+                    <li key={item.name}>
+                        <span>{item.name}</span>
+                        <a href="/">Detalhes</a>
+                    </li>
+                ))}
+            </List>
         </Container>
     );
 }
