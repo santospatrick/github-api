@@ -43,6 +43,8 @@ export const Owner = styled.header`
 `;
 
 export const IssuesList = styled.ul`
+    display: flex;
+    flex-direction: column;
     padding-top: 30px;
     margin-top: 30px;
     border-top: 1px solid #eee;
@@ -100,4 +102,9 @@ export const IssuesList = styled.ul`
             }
         }
     }
+`;
+
+export const Select = styled.select`
+    align-self: flex-end;
+    margin-bottom: 15px;
 `;

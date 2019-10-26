@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Loading, Owner, IssuesList } from './styles';
+import { Loading, Owner, IssuesList, Select } from './styles';
 import api from '../../services/api';
 import Container from '../../components/Container';
 
@@ -11,6 +11,7 @@ function Repository({ match }) {
     const [repository, setRepository] = useState({});
     const [loading, setLoading] = useState(true);
     const [issues, setIssues] = useState([]);
+    const [filter, setFilter] = useState('open');
 
     useEffect(() => {
         async function getInfo() {
@@ -32,6 +33,23 @@ function Repository({ match }) {
         getInfo();
     }, [repoName]);
 
+    async function handleSelectChange(event) {
+        setFilter(event.target.value);
+        setIssues([]);
+
+        const { data: filteredIssues } = await api.get(
+            `/repos/${repoName}/issues`,
+            {
+                params: {
+                    state: event.target.value,
+                    per_page: 5,
+                },
+            }
+        );
+
+        setIssues(filteredIssues);
+    }
+
     if (loading) {
         return <Loading>Carregando</Loading>;
     }
@@ -49,6 +67,12 @@ function Repository({ match }) {
             </Owner>
 
             <IssuesList>
+                <Select onChange={handleSelectChange} value={filter}>
+                    <option value="open">Abertas</option>
+                    <option value="closed">Fechadas</option>
+                    <option value="all">Todas</option>
+                </Select>
+
                 {issues.map(issue => (
                     <li key={String(issue.id)}>
                         <img

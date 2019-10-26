@@ -69,7 +69,7 @@ function Main() {
             <Form onSubmit={handleSubmit} error={messageError}>
                 <input
                     type="text"
-                    placeholder="Adicionar repositório"
+                    placeholder="Adicionar repositório ex: facebook/react"
                     onChange={handleInputChange}
                     value={newRepo}
                 />
