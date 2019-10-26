@@ -11,6 +11,8 @@ export const Form = styled.form`
         padding: 10px 15px;
         border-radius: 4px;
         font-size: 16px;
+
+        border-color: ${props => props.error && 'red'};
     }
 `;
 
@@ -72,4 +74,10 @@ export const List = styled.ul`
             text-decoration: none;
         }
     }
+`;
+
+export const InputErrorMessage = styled.small`
+    color: red;
+    margin-top: 5px;
+    display: block;
 `;

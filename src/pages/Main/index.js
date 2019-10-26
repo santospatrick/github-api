@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, InputErrorMessage } from './styles';
 import api from '../../services/api';
 import Container from '../../components/Container';
 
@@ -17,6 +17,7 @@ function Main() {
     const [newRepo, setNewRepo] = useState('');
     const [repos, setRepos] = useState(initialRepositories);
     const [loading, setLoading] = useState(false);
+    const [messageError, setMessageError] = useState('');
 
     useEffect(
         () => localStorage.setItem('repositories', JSON.stringify(repos)),
@@ -24,6 +25,7 @@ function Main() {
     );
 
     function handleInputChange(e) {
+        setMessageError('');
         setNewRepo(e.target.value);
     }
 
@@ -31,15 +33,30 @@ function Main() {
         e.preventDefault();
 
         setLoading(true);
-        const response = await api.get(`/repos/${newRepo}`);
 
-        const data = {
-            name: response.data.full_name,
-        };
+        try {
+            if (repos.some(repo => repo.name === newRepo)) {
+                throw new Error('Repositório duplicado');
+            }
 
-        setRepos([...repos, data]);
-        setNewRepo('');
-        setLoading(false);
+            const response = await api.get(`/repos/${newRepo}`);
+
+            const data = {
+                name: response.data.full_name,
+            };
+
+            setRepos([...repos, data]);
+            setNewRepo('');
+        } catch (error) {
+            if (error.message) {
+                setMessageError(error.message);
+            }
+            if (Object.prototype.hasOwnProperty.call(error, 'response')) {
+                setMessageError('Repositório não encontrado');
+            }
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -49,7 +66,7 @@ function Main() {
                 Repositórios
             </h1>
 
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} error={messageError}>
                 <input
                     type="text"
                     placeholder="Adicionar repositório"
@@ -65,6 +82,10 @@ function Main() {
                     )}
                 </SubmitButton>
             </Form>
+
+            {messageError && (
+                <InputErrorMessage>{messageError}</InputErrorMessage>
+            )}
 
             <List>
                 {repos.map(item => (
